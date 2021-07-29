@@ -25,6 +25,7 @@ class Grid {
         let width = this.ctx.canvas.width
         let height = this.ctx.canvas.height
         //clear the canvas
+        this.ctx.fillStyle = "white"
         this.ctx.fillRect(0, 0, width, height)
 
         let cells_width = parseInt(width / this.cols)
@@ -148,7 +149,7 @@ const tf = require("@tensorflow/tfjs")
 
 async function loadModel() {
     window.model = await tf.loadLayersModel("./src/model-1a/model.json")
-    let input = tf.tensor([[-1, 1, 0, 0, -1, 0, 0, 0, 0]])
+    let input = tf.tensor([[1, 0, 0,1, 1,0,0,1, 1, 0, 0, 0, 0,1,0,0,0,0]])
     let o = model.predict(input)
     console.log(o.arraySync())
 }
@@ -187,6 +188,8 @@ canvas.onclick = (e) => {
             grid.grid[posI][posJ].player = player
             grid.grid[posI][posJ].occupied = true
             player.tracker.push(grid.grid[posI][posJ])
+        }else{
+            return
         }
         grid.update()
         if (player.checkWin()) {
@@ -204,15 +207,27 @@ canvas.onclick = (e) => {
 }
 
 function playAi() {
-    let input = new Array(3).fill(0).map((e) => new Array(3).fill(0))
+    // let input = new Array(3).fill(0).map((e) => new Array(3).fill(0))
+    // for (let i = 0; i < 3; i++) {
+    //     for (let j = 0; j < 3; j++) {
+    //         if (grid.grid[i][j]?.player?.name == "x") input[i][j] = -1
+    //         else if (grid.grid[i][j]?.player?.name == "o") input[i][j] = 1
+    //     }
+    // }
+    // input = tf.tensor(input).reshape([1, 9])
+    // console.log(input.print())
+    let input = new Array(18).fill(0)
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-            if (grid.grid[i][j]?.player?.name == "x") input[i][j] = -1
-            else if (grid.grid[i][j]?.player?.name == "o") input[i][j] = 1
+            let value = 0
+            if (grid.grid[i][j]?.player?.name == "x") value = -1
+            else if (grid.grid[i][j]?.player?.name == "o") value = 1
+            let index = 2*((i * 3) + j)
+            if(value == -1) index+=1
+            input[index] = value == 0 ? 0 : 1
         }
     }
-    input = tf.tensor(input).reshape([1, 9])
-    console.log(input.print())
+    input = tf.tensor(input).reshape([1, 18])
     let o = model.predict(input)
     o = o.arraySync()
     o = o[0]

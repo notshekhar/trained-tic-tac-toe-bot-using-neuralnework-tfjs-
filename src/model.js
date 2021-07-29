@@ -2,7 +2,7 @@ const tf = require("@tensorflow/tfjs")
 
 const model = tf.sequential({
     layers: [
-        tf.layers.dense({ inputShape: [9], units: 64, activation: "relu" }),
+        tf.layers.dense({ inputShape: [18], units: 100, activation: "relu" }),
         tf.layers.dense({ units: 9, activation: "softmax" }),
     ],
 })

@@ -6,10 +6,10 @@ const Board = function (state, player) {
     this.state = state || new Array(3).fill(0).map((e) => new Array(3).fill(0))
     this.pastState = false
     this.setPastState = (board) => (this.pastState = board)
-    // this.togglePlayer = () => (this.player = this.player == 1 ? -1 : 1)
-    this.togglePlayer = () => (this.player = this.player == 1 ? 0.5 : 1)
-    // this.player = player || -1
-    this.player = player || 0.5
+    this.togglePlayer = () => (this.player = this.player == 1 ? -1 : 1)
+    // this.togglePlayer = () => (this.player = this.player == 1 ? 0.5 : 1)
+    this.player = player || -1
+    // this.player = player || 0.5
     this.copy = function () {
         let newState = []
         this.state.forEach((row) => {
